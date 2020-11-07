@@ -1,0 +1,192 @@
+<html>
+<head>
+	<title>Holo AutoClip</title>
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script src="js/jquery.csv.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+	<style>
+		body {
+			padding-top: 65px;
+		}
+		.scrollable-menu {
+			height: auto;
+			max-height: 400px;
+			overflow-x: hidden;
+		}
+		iframe {
+			width: 100vw;
+			height: 45vw;
+		}
+		.videos {
+			display: grid;
+			grid-auto-flow: row;
+		}
+	</style>
+	<script>
+		var date = "";
+		var streamer = "";
+		var type = "";
+		function update() {
+			var filepre = "";
+			var wkdate = new Date(date);
+			var wkyear = wkdate.getFullYear();
+			var wkmonth = wkdate.getMonth() + 1;
+			var wkday = wkdate.getDate();
+			if (type == "Humor") {
+				filepre = "humor/";
+			}
+			else if (type == "Wholesomeness") {
+				filepre = "teetee/";
+			}
+			
+			filename = "csv/" + filepre + wkyear + "-" + wkmonth + "-" + wkday + ".csv";
+			$("#vidCon").empty();
+			$.get(filename, function(data) {
+				var streamArr = $.csv.toArrays(data);
+				for(var i = 0; i < streamArr.length; i++) {
+					if (i == 0) {
+						continue;
+					}
+					else {
+						if (streamArr[i][0] == streamer) {
+							var ytCode = streamArr[i][2].split('=')[1].split('&')[0];
+							var tstamp = streamArr[i][2].split('=').slice(-1).pop();
+							$("#vidCon").append("<iframe src=\"https://www.youtube-nocookie.com/embed/" + ytCode + "?start=" + tstamp + "\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>");
+						}
+					}
+				}			
+			}, 'text');
+			
+			
+		}
+		$(document).ready(function(){
+			$("#streamerSearch").on("keyup", function() {
+				var value = $(this).val().toLowerCase();
+				$("#streamerList a").filter(function() {
+					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+				});
+			});
+			
+			$("#datepicker").datepicker({
+				daysOfWeekDisabled: "1,2,3,4,5,6",
+				daysOfWeekHighlighted: "0",
+			})
+			.on('changeDate', function(e){
+				$("#weekButton").text("Week of " + e.format());
+				date = e.format();
+				if ($("#streamerButton").text().startsWith("Streamer:") && $("#typeButton").text().startsWith("Type:")) {
+					update();
+				}
+				$datepicker.datepicker('hide');
+			});
+			
+			$("#streamerDropdown a").click(function(e) {
+				$("#streamerButton").text("Streamer: " + $(this).text());
+				streamer = $(this).text();
+				if ($("#weekButton").text().startsWith("Week of") && $("#typeButton").text().startsWith("Type:")) {
+					update();
+				}
+			});
+			
+			$("#typeDropdown a").click(function(e) {
+				$("#typeButton").text("Type: " + $(this).text());
+				type = $(this).text();
+				if ($("#weekButton").text().startsWith("Week of") && $("#streamerButton").text().startsWith("Streamer:")) {
+					update();
+				}
+			});
+		});
+	</script>
+</head>
+<body>
+	<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+		<a class="navbar-brand" href="#">Holo AutoClip</a>
+		<div class="collapse navbar-collapse" id="navbarCollapse">
+			<ul class="navbar-nav mr-auto">
+				<div class="dropdown">
+				  <button class="btn btn-secondary dropdown-toggle" type="button" id="weekButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Week
+				  </button>
+				  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="weekCal">
+					<div id="datepicker"></div>
+				  </div>
+				</div>
+				<div class="dropdown">
+				  <button class="btn btn-secondary dropdown-toggle" type="button" id="streamerButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Streamer
+				  </button>
+				  <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton" id="streamerDropdown">
+					<input class="form-control" id="streamerSearch" type="text" placeholder="Search">
+					<div id="streamerList">
+						<a class="dropdown-item" id="Aki">Aki</a>
+						<a class="dropdown-item" id="Amelia">Amelia</a>
+						<a class="dropdown-item" id="Aruran">Aruran</a>
+						<a class="dropdown-item" id="Astel">Astel</a>
+						<a class="dropdown-item" id="Aqua">Aqua</a>
+						<a class="dropdown-item" id="Ayame">Ayame</a>
+						<a class="dropdown-item" id="AZKi">AZKi</a>
+						<a class="dropdown-item" id="Botan">Botan</a>
+						<a class="dropdown-item" id="Calli">Calli</a>
+						<a class="dropdown-item" id="Choco">Choco</a>
+						<a class="dropdown-item" id="Coco">Coco</a>
+						<a class="dropdown-item" id="Flare">Flare</a>
+						<a class="dropdown-item" id="Fubuki">Fubuki</a>
+						<a class="dropdown-item" id="Gura">Gura</a>
+						<a class="dropdown-item" id="Haato">Haato</a>
+						<a class="dropdown-item" id="Ina">Ina</a>
+						<a class="dropdown-item" id="Iofi">Iofi</a>
+						<a class="dropdown-item" id="Izuru">Izuru</a>
+						<a class="dropdown-item" id="Kanata">Kanata</a>
+						<a class="dropdown-item" id="Kiara">Kiara</a>
+						<a class="dropdown-item" id="Kira">Kira</a>
+						<a class="dropdown-item" id="Korone">Korone</a>
+						<a class="dropdown-item" id="Lamy">Lamy</a>
+						<a class="dropdown-item" id="Luna">Luna</a>
+						<a class="dropdown-item" id="Marine">Marine</a>
+						<a class="dropdown-item" id="Matsuri">Matsuri</a>
+						<a class="dropdown-item" id="Mel">Mel</a>
+						<a class="dropdown-item" id="Miko">Miko</a>
+						<a class="dropdown-item" id="Mio">Mio</a>
+						<a class="dropdown-item" id="Miyabi">Miyabi</a>
+						<a class="dropdown-item" id="Moona">Moona</a>
+						<a class="dropdown-item" id="Nene">Nene</a>
+						<a class="dropdown-item" id="Noel">Noel</a>
+						<a class="dropdown-item" id="Oga">Oga</a>
+						<a class="dropdown-item" id="Okayu">Okayu</a>
+						<a class="dropdown-item" id="Pekora">Pekora</a>
+						<a class="dropdown-item" id="Polka">Polka</a>
+						<a class="dropdown-item" id="Risu">Risu</a>
+						<a class="dropdown-item" id="Roberu">Roberu</a>
+						<a class="dropdown-item" id="Rushia">Rushia</a>
+						<a class="dropdown-item" id="Shien">Shien</a>
+						<a class="dropdown-item" id="Shion">Shion</a>
+						<a class="dropdown-item" id="Sora">Sora</a>
+						<a class="dropdown-item" id="Suisei">Suisei</a>
+						<a class="dropdown-item" id="Temma">Temma</a>
+						<a class="dropdown-item" id="Towa">Towa</a>
+						<a class="dropdown-item" id="Roboco">Roboco</a>
+						<a class="dropdown-item" id="Watame">Watame</a>
+						</div>
+				  </div>
+				</div>
+				<div class="dropdown">
+				  <button class="btn btn-secondary dropdown-toggle" type="button" id="typeButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Type
+				  </button>
+				  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="typeDropdown">
+					<a class="dropdown-item" id="Humor">Humor</a>
+					<a class="dropdown-item" id="Wholesomeness">Wholesomeness</a>
+				  </div>
+				</div>
+			</ul>
+	</nav>
+	<div class="videos" id="vidCon">
+					<p>Select week, streamer, and type of clip from above.</p>
+	</div>
+</html>
+
+				
+								
