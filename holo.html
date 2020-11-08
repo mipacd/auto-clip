@@ -17,12 +17,14 @@
 			overflow-x: hidden;
 		}
 		iframe {
-			width: 100vw;
-			height: 45vw;
+			width: 48vw;
+			height: 46vh;
 		}
 		.videos {
 			display: grid;
 			grid-auto-flow: row;
+			grid-template-columns: 50vw 50vw;
+			grid-template-rows: auto;
 		}
 	</style>
 	<script>
@@ -41,10 +43,13 @@
 			else if (type == "Wholesomeness") {
 				filepre = "teetee/";
 			}
+			else if (type == "Elite") {
+				filepre = "faq/"
+			}
 			
 			filename = "csv/" + filepre + wkyear + "-" + wkmonth + "-" + wkday + ".csv";
 			$("#vidCon").empty();
-			$.get(filename, function(data) {
+			$.get(filename,{ "_": $.now() }, function(data) {
 				var streamArr = $.csv.toArrays(data);
 				for(var i = 0; i < streamArr.length; i++) {
 					if (i == 0) {
@@ -80,7 +85,7 @@
 				if ($("#streamerButton").text().startsWith("Streamer:") && $("#typeButton").text().startsWith("Type:")) {
 					update();
 				}
-				$datepicker.datepicker('hide');
+				$("#weekCal").dropdown('toggle');
 			});
 			
 			$("#streamerDropdown a").click(function(e) {
@@ -160,6 +165,7 @@
 						<a class="dropdown-item" id="Polka">Polka</a>
 						<a class="dropdown-item" id="Risu">Risu</a>
 						<a class="dropdown-item" id="Roberu">Roberu</a>
+						<a class="dropdown-item" id="Roboco">Roboco</a>
 						<a class="dropdown-item" id="Rushia">Rushia</a>
 						<a class="dropdown-item" id="Shien">Shien</a>
 						<a class="dropdown-item" id="Shion">Shion</a>
@@ -167,7 +173,6 @@
 						<a class="dropdown-item" id="Suisei">Suisei</a>
 						<a class="dropdown-item" id="Temma">Temma</a>
 						<a class="dropdown-item" id="Towa">Towa</a>
-						<a class="dropdown-item" id="Roboco">Roboco</a>
 						<a class="dropdown-item" id="Watame">Watame</a>
 						</div>
 				  </div>
@@ -179,6 +184,7 @@
 				  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="typeDropdown">
 					<a class="dropdown-item" id="Humor">Humor</a>
 					<a class="dropdown-item" id="Wholesomeness">Wholesomeness</a>
+					<a class="dropdown-item" id="Elite">Elite</a>
 				  </div>
 				</div>
 			</ul>
