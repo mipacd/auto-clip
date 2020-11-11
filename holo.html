@@ -8,6 +8,7 @@
 	<script src="js/jquery.csv.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+	<script src="https://randojs.com/2.0.0.js"></script>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 	<style>
@@ -60,9 +61,17 @@
 			$("#vidCon").empty();
 			$.get(filename,{ "_": $.now() }, function(data) {
 				var streamArr = $.csv.toArrays(data);
+				var randSeq = randoSequence(1, streamArr.length - 1).slice(0, 10)
 				for(var i = 0; i < streamArr.length; i++) {
 					if (i == 0) {
 						continue;
+					}
+					else if (streamer == "Random") {
+						if (randSeq.includes(i)) {
+							var ytCode = streamArr[i][2].split('=')[1].split('&')[0];
+							var tstamp = streamArr[i][2].split('=').slice(-1).pop();
+							$("#vidCon").append("<iframe src=\"https://www.youtube-nocookie.com/embed/" + ytCode + "?start=" + tstamp + "\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>");
+						}
 					}
 					else {
 						if (streamArr[i][0] == streamer) {
@@ -135,6 +144,7 @@
 				  <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton" id="streamerDropdown">
 					<input class="form-control" id="streamerSearch" type="text" placeholder="Search">
 					<div id="streamerList">
+						<a class="dropdown-item" id="Random">--Random--</a>
 						<a class="dropdown-item" id="Aki">Aki</a>
 						<a class="dropdown-item" id="Amelia">Amelia</a>
 						<a class="dropdown-item" id="Aruran">Aruran</a>
